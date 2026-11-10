@@ -1,22 +1,32 @@
 workflows:
-  cnd-mobile-android:
-    name: CND Mobile Android APK
-    max_build_duration: 120
-    instance_type: linux_x2
+  android-workflow:
+    name: Android Release Build
+    instance_type: mac_mini_m1
+    max_build_duration: 30
     environment:
-      vars:
-        PACKAGE_NAME: "id.co.cndmobile"
-      java: 17
+      flutter: stable
+      xcode: latest
+      cocoapods: default
     scripts:
-      - name: Download Gradle 8.9
+      - name: Check directory and build APK
         script: |
-          curl -L --fail https://services.gradle.org/distributions/gradle-8.9-bin.zip -o /tmp/gradle-8.9-bin.zip
-          unzip -q /tmp/gradle-8.9-bin.zip -d /tmp
-      - name: Configure Android SDK
-        script: |
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-      - name: Build debug APK
-        script: |
-          /tmp/gradle-8.9/bin/gradle --no-daemon assembleDebug
+          # Periksa lokasi direktori dan cari pubspec.yaml
+          echo "Current directory: $(pwd)"
+          
+          # Jika pubspec.yaml ada di folder CND-Mobile-Android, masuk ke foldernya
+          if [ -d "CND-Mobile-Android" ]; then
+            cd CND-Mobile-Android
+          fi
+          
+          # Pastikan file pubspec.yaml ditemukan sebelum build
+          if [ ! -f "pubspec.yaml" ]; then
+            echo "Error: pubspec.yaml tidak ditemukan!"
+            ls -la
+            exit 1
+          fi
+
+          echo "Found pubspec.yaml, starting Flutter build..."
+          flutter pub get
+          flutter build apk --release
     artifacts:
-      - app/build/outputs/apk/debug/*.apk
+      - "**/build/app/outputs/flutter-apk/*.apk"
