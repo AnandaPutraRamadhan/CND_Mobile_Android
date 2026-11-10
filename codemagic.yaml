@@ -1,32 +1,18 @@
 workflows:
-  android-workflow:
-    name: Android Release Build
+  android-native-workflow:
+    name: Android Native Build APK
     instance_type: mac_mini_m1
     max_build_duration: 30
     environment:
-      flutter: stable
-      xcode: latest
-      cocoapods: default
+      android_sdk: latest
+      java: 17
     scripts:
-      - name: Check directory and build APK
+      - name: Build Android APK (Gradle)
         script: |
-          # Periksa lokasi direktori
-          echo "Current directory: $(pwd)"
+          # Berikan izin eksekusi ke gradlew jika belum ada
+          chmod +x gradlew
           
-          # Masuk ke folder project yang benar (menggunakan underscore)
-          if [ -d "CND_Mobile_Android" ]; then
-            cd CND_Mobile_Android
-          fi
-          
-          # Pastikan file pubspec.yaml ditemukan
-          if [ ! -f "pubspec.yaml" ]; then
-            echo "Error: pubspec.yaml tidak ditemukan!"
-            ls -la
-            exit 1
-          fi
-
-          echo "Found pubspec.yaml, starting Flutter build..."
-          flutter pub get
-          flutter build apk --release
+          # Jalankan build release APK menggunakan Gradle
+          ./gradlew assembleRelease
     artifacts:
-      - "**/build/app/outputs/flutter-apk/*.apk"
+      - "app/build/outputs/apk/release/*.apk"
