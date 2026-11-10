@@ -4,12 +4,11 @@ workflows:
     instance_type: mac_mini_m1
     max_build_duration: 30
     environment:
-      android_sdk: latest
       java: 17
     scripts:
       - name: Build Android APK (Gradle)
         script: |
-          # Berikan izin eksekusi ke gradlew jika belum ada
+          # Berikan izin eksekusi ke gradlew
           chmod +x gradlew
           
           # Jalankan build release APK menggunakan Gradle
