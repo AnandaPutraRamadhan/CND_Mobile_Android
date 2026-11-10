@@ -10,15 +10,15 @@ workflows:
     scripts:
       - name: Check directory and build APK
         script: |
-          # Periksa lokasi direktori dan cari pubspec.yaml
+          # Periksa lokasi direktori
           echo "Current directory: $(pwd)"
           
-          # Jika pubspec.yaml ada di folder CND-Mobile-Android, masuk ke foldernya
-          if [ -d "CND-Mobile-Android" ]; then
-            cd CND-Mobile-Android
+          # Masuk ke folder project yang benar (menggunakan underscore)
+          if [ -d "CND_Mobile_Android" ]; then
+            cd CND_Mobile_Android
           fi
           
-          # Pastikan file pubspec.yaml ditemukan sebelum build
+          # Pastikan file pubspec.yaml ditemukan
           if [ ! -f "pubspec.yaml" ]; then
             echo "Error: pubspec.yaml tidak ditemukan!"
             ls -la
